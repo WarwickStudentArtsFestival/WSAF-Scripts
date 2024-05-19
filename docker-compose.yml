@@ -47,7 +47,6 @@ services:
 
     environment:
       VIRTUAL_HOST: ${WSAF_MANAGEMENT_VIRTUAL_HOST}
-
       DATABASE_URL: postgres://wsaf:${POSTGRES_PASSWORD}@wsaf-postgres:5432/wsaf?sslmode=disable
       VIRTUAL_PORT: 8080
       USE_DOCKER: 'on'
