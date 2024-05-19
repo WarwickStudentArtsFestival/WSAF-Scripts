@@ -1,0 +1,65 @@
+services:
+  wsaf-postgres:
+    container_name: WSAF-Postgres
+    image: postgres:latest
+    volumes:
+      - wsaf-postgres:/var/lib/postgresql/data/
+    networks:
+      - wsaf-network
+    environment:
+      POSTGRES_USER: wsaf
+      POSTGRES_DB: wsaf
+    env_file:
+      - stack.env
+
+  wsaf24-website:
+    container_name: WSAF24-Website
+    image: ghcr.io/warwickstudentartsfestival/wsaf24-website:main
+    networks:
+      - wsaf-network
+    depends_on:
+      - wsaf-postgres
+    environment:
+      VIRTUAL_HOST: ${WSAF24_WEBSITE_VIRTUAL_HOST}
+
+      POSTGRES_USER: wsaf
+      POSTGRES_DB: wsaf
+
+      PORT: 3000
+      BASE_URL: ${WSAF24_WEBSITE_BASE_URL}
+      HOSTNAME: 0.0.0.0
+      NODE_ENV: production
+      NEXT_PUBLIC_GOOGLE_ANALYTICS_ID: ${WSAF24_GOOGLE_ANALYTICS_ID}
+    env_file:
+      - stack.env
+
+  wsaf-management:
+    container_name: WSAF24-Management
+    image: ghcr.io/warwickstudentartsfestival/wsaf-management:main
+    networks:
+      - wsaf-network
+
+    expose:
+      - "8080"
+
+    depends_on:
+      - wsaf-postgres
+
+    environment:
+      VIRTUAL_HOST: ${WSAF_MANAGEMENT_VIRTUAL_HOST}
+
+      DATABASE_URL: postgres://wsaf:${POSTGRES_PASSWORD}@wsaf-postgres:5432/wsaf?sslmode=disable
+      VIRTUAL_PORT: 8080
+      USE_DOCKER: 'on'
+      DJANGO_SETTINGS_MODULE: config.settings
+      SECRET_KEY: ${WSAF_MANAGEMENT_SECRET_KEY}
+      INTERNAL_IPS: 127.0.0.1,0.0.0.0
+      CSRF_TRUSTED_ORIGINS: ${WSAF_MANAGEMENT_BASE_URL}
+    env_file:
+      - stack.env
+
+volumes:
+  wsaf-postgres:
+
+networks:
+  wsaf-network:

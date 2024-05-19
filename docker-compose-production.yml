@@ -1,7 +1,7 @@
 services:
   wsaf-postgres:
     extends:
-      file: docker-compose-main.yml
+      file: docker-compose.yml
       service: wsaf-postgres
     container_name: WSAF24-Postgres-Production
     ports:
@@ -9,14 +9,14 @@ services:
 
   wsaf24-website:
     extends:
-      file: docker-compose-main.yml
+      file: docker-compose.yml
       service: wsaf24-website
     container_name: WSAF24-Website-Production
     image: ghcr.io/warwickstudentartsfestival/wsaf24-website:production
 
   wsaf-management:
     extends:
-      file: docker-compose-main.yml
+      file: docker-compose.yml
       service: wsaf-management
     container_name: WSAF24-Management-Production
     image: ghcr.io/warwickstudentartsfestival/wsaf-management:production
