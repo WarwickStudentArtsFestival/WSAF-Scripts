@@ -33,7 +33,7 @@ services:
     env_file:
       - stack.env
 
-  wsaf24-management:
+  wsaf-management:
     container_name: WSAF24-Management-Main
     image: ghcr.io/warwickstudentartsfestival/wsaf-management:main
     networks:
