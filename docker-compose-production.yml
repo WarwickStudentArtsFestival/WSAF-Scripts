@@ -4,6 +4,8 @@ services:
       file: docker-compose-main.yml
       service: wsaf-postgres
     container_name: WSAF24-Postgres-Production
+    ports:
+      - "48242:5432"
 
   wsaf24-website:
     extends:

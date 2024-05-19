@@ -11,6 +11,8 @@ services:
       POSTGRES_DB: wsaf
     env_file:
       - stack.env
+    ports:
+      - "44363:5432"
 
   wsaf24-website:
     container_name: WSAF24-Website-Main
