@@ -4,7 +4,6 @@ services:
       file: docker-compose-main.yml
       service: wsaf-postgres
     container_name: WSAF24-Postgres-Production
-    image: ghcr.io/warwickstudentartsfestival/wsaf24-website:production
 
   wsaf24-website:
     extends:
