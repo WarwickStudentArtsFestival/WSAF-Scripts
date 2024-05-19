@@ -11,14 +11,14 @@ services:
       file: docker-compose-main.yml
       service: wsaf24-website
     container_name: WSAF24-Website-Production
-    image: ghcr.io/warwickstudentartsfestival/wsaf24-management:production
+    image: ghcr.io/warwickstudentartsfestival/wsaf24-website:production
 
   wsaf24-management:
     extends:
       file: docker-compose-main.yml
       service: wsaf-management
     container_name: WSAF24-Management-Production
-    image: ghcr.io/warwickstudentartsfestival/wsaf-management:production
+    image: ghcr.io/warwickstudentartsfestival/wsaf-management:main
 
 volumes:
   wsaf-postgres:
