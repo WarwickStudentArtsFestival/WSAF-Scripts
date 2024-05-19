@@ -18,7 +18,8 @@ services:
       file: docker-compose.yml
       service: wsaf-management
     container_name: WSAF24-Management-Main
-      - USE_X_FORWARDED_HOST=True
+    environment:
+      USE_X_FORWARDED_HOST: True
 
 volumes:
   wsaf-postgres:
