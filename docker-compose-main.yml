@@ -19,7 +19,7 @@ services:
       service: wsaf-management
     container_name: WSAF24-Management-Main
     environment:
-      USE_X_FORWARDED_HOST: True
+      USE_X_FORWARDED_HOST: "True"
       DEBUG: ${WSAF_MANAGEMENT_DEV_DEBUG}
 
 volumes:
