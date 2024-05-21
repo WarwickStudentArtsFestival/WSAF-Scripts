@@ -54,6 +54,7 @@ services:
       SECRET_KEY: ${WSAF_MANAGEMENT_SECRET_KEY}
       INTERNAL_IPS: 127.0.0.1,0.0.0.0
       CSRF_TRUSTED_ORIGINS: ${WSAF_MANAGEMENT_BASE_URL}
+      VITE_DEV_MODE: 'false'
     env_file:
       - stack.env
 
