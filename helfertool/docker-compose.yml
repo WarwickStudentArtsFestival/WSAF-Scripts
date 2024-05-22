@@ -1,0 +1,14 @@
+services:
+  helfertool:
+    container_name: WSAF-Helfertool
+    image: wsaf-helfertool
+    ports:
+      - '8000:8000'
+    volumes:
+      - helfer-data:/data
+      - helfer-config:/config
+      - helfer-log:/log
+volumes:
+  helfer-data:
+  helfer-config:
+  helfer-log:
