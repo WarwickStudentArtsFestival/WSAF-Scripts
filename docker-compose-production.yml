@@ -20,6 +20,8 @@ services:
       service: wsaf-management
     container_name: WSAF24-Management-Production
     image: ghcr.io/warwickstudentartsfestival/wsaf-management:production
+    environment:
+      USE_X_FORWARDED_HOST: "True"
 
 volumes:
   wsaf-postgres:
