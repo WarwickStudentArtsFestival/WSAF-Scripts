@@ -64,6 +64,8 @@ services:
 volumes:
   wsaf-postgres:
   wsaf-management-media:
+    external:
+      name: wsaf-management-media
 
 networks:
   wsaf-network:
