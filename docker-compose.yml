@@ -37,6 +37,8 @@ services:
   wsaf-management:
     container_name: WSAF24-Management
     image: ghcr.io/warwickstudentartsfestival/wsaf-management:main
+    volumes:
+      - wsaf-management-media:/srv/app/public/media
     networks:
       - wsaf-network
 
@@ -61,6 +63,7 @@ services:
 
 volumes:
   wsaf-postgres:
+  wsaf-management-media:
 
 networks:
   wsaf-network:
