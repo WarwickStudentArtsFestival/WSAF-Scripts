@@ -70,6 +70,8 @@ services:
       - wsaf-network
     environment:
       VIRTUAL_HOST: ${WSAF24_ASSETS_VIRTUAL_HOST}
+    env_file:
+      - stack.env
 
 volumes:
   wsaf-postgres:
