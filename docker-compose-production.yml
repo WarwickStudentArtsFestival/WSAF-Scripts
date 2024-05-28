@@ -23,6 +23,12 @@ services:
     environment:
       USE_X_FORWARDED_HOST: "True"
 
+  wsaf-assets:
+    extends:
+      file: docker-compose.yml
+      service: wsaf-assets
+    container_name: WSAF24-Assets-Production
+
 volumes:
   wsaf-postgres:
   wsaf-management-media:

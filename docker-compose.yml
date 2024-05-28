@@ -61,6 +61,16 @@ services:
     env_file:
       - stack.env
 
+  wsaf-assets:
+    container_name: WSAF-Assets
+    image: nginx
+    volumes:
+      - wsaf-management-media/usr/share/nginx/html:ro
+    networks:
+      - wsaf-network
+    environment:
+      VIRTUAL_HOST: ${WSAF24_ASSETS_VIRTUAL_HOST}
+
 volumes:
   wsaf-postgres:
   wsaf-management-media:

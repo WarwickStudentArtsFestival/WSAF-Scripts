@@ -22,6 +22,12 @@ services:
       USE_X_FORWARDED_HOST: "True"
       DEBUG: ${WSAF_MANAGEMENT_DEV_DEBUG}
 
+  wsaf-assets:
+    extends:
+      file: docker-compose.yml
+      service: wsaf-assets
+    container_name: WSAF-Assets-Main
+
 volumes:
   wsaf-postgres:
   wsaf-management-media:
