@@ -65,7 +65,7 @@ services:
     container_name: WSAF-Assets
     image: nginx
     volumes:
-      - wsaf-management-media/usr/share/nginx/html:ro
+      - wsaf-management-media:/usr/share/nginx/html:ro
     networks:
       - wsaf-network
     environment:
