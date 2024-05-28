@@ -26,7 +26,7 @@ services:
     extends:
       file: docker-compose.yml
       service: wsaf-assets
-    container_name: WSAF-Assets-Main
+    container_name: WSAF24-Assets-Main
 
 volumes:
   wsaf-postgres:

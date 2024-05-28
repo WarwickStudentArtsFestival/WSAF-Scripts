@@ -69,7 +69,7 @@ services:
     networks:
       - wsaf-network
     environment:
-      VIRTUAL_HOST: ${WSAF24_ASSETS_VIRTUAL_HOST}
+      VIRTUAL_HOST: ${WSAF_ASSETS_VIRTUAL_HOST}
     env_file:
       - stack.env
 
