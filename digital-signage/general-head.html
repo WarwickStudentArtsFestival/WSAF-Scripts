@@ -14,3 +14,72 @@
     font-family: 'Lexend', Arial, sans-serif;
   }
 </style>
+
+<script type="text/javascript">
+  const categoryImages = {
+    MICROPHONE: "categories_microphone.png",
+    BALLET_SHOES: "categories_ballet_shoes.png",
+    TRUMPET: "categories_trumpet.png",
+    MASK: "categories_mask.png",
+    PAINTBRUSH: "categories_paintbrush.png",
+  }
+
+  function getImageTag(event) {
+    let imageUrl;
+
+    if (event.image && event.image.length > 50) {
+      imageUrl = `data:image;base64, ${event.image}`;
+    }
+    else {
+      const imageName = categoryImages[event.image];
+      imageUrl = `https://warwick.ac.uk/services/engagementgroup/marketing/digitalengagement/screens/feeds/wsaf/${imageName || 'categories_mask.png'}`;
+    }
+
+    return `<img alt="Event image" src="${imageUrl}">`;
+  }
+
+  function formatTime(time) {
+    const date = Date.parse(time);
+    return new Intl.DateTimeFormat('en-GB', {
+      weekday: 'short',
+      month: 'long',
+      day: 'numeric',
+    }).format(date);
+  }
+
+  function setup() {
+    // Parse RSS Feed
+    const eventInstances = [];
+    const rssFeedElement = document.getElementsByClassName('feed')[0];
+    const rssFeedElements = rssFeedElement.getElementsByClassName('feedEntry');
+    for (let i = 0; i < rssFeedElements.length; i++) {
+      const entry = rssFeedElements[i].getElementsByClassName('entryContent')[0];
+      eventInstances.push(JSON.parse(entry.textContent.trim().replaceAll('%20', ' ')));
+      rssFeedElements[i].remove();
+    }
+
+    // Filter RSS Feed
+    const filteredEventInstances = eventInstances;
+
+    // Create Articles
+    const eventsDiv = document.getElementById('wsaf-events');
+    filteredEventInstances.forEach(eventInstance => {
+      const article = document.createElement('article');
+      article.innerHTML = `
+        <article>
+            <div>
+                <p>${formatTime(eventInstance.start)} - ${formatTime(eventInstance.end)}</p>
+                <p>${eventInstance.categories.join(' | ')}</p>
+            </div>
+            <div>
+                ${getImageTag(eventInstance)}
+            </div>
+            <div>
+                <p>${eventInstance.title}</p>
+            </div>
+        </article>
+    `;
+      eventsDiv.appendChild(article);
+    });
+  }
+</script>

@@ -16,3 +16,11 @@ To get around this, we can use RSS feeds, which are fetched server-side, and the
    * https://wsaf-management-main.containers.uwcs.co.uk/ds/feed
    * https://management.wsaf.org.uk/ds/feed
 2. In Customisation -> Edit Page Head, copy the HTML in general-head.html followed by [screen]-head.html.
+3. Add a custom HTML block (Customisation -> Custom HTML) after the RSS feed with the following:
+```html
+Setup Script
+
+<script>
+   setup()
+</script>
+```
