@@ -13,6 +13,72 @@
   .screensize, .lexend {
     font-family: 'Lexend', Arial, sans-serif;
   }
+
+  .wsaf-events {
+    position: absolute;
+    gap: 0;
+    overflow: hidden;
+  }
+
+  .wsaf-events article {
+    background-color: #4F1D75;
+    color: #fff;
+  }
+
+  .wsaf-events article.colour-YELLOW {
+    background-color: #FFBD00;
+    color: #000;
+  }
+
+  .wsaf-events article.colour-ORANGE {
+    background-color: #F5722F;
+    color: #fff;
+  }
+
+  .wsaf-events article.colour-PINK {
+    background-color: #B82458;
+    color: #fff;
+  }
+
+  .wsaf-events article {
+    padding: 10px;
+    margin: 0 8px 16px;
+    break-inside: avoid;
+    text-align: center;
+  }
+
+  .wsaf-events .time {
+    font-size: 16px;
+    text-transform: uppercase;
+    font-weight: bolder;
+    margin-bottom: 5px;
+  }
+
+  .wsaf-events img {
+    object-fit: contain;
+    width: 80px;
+    margin-bottom: 5px;
+  }
+
+  .wsaf-events .presented-by {
+    font-style: italic;
+    font-size: 12px;
+    line-height: 15px;
+    margin: 0;
+  }
+
+  .wsaf-events .title {
+    font-weight: bolder;
+    font-size: 18px;
+    line-height: 22px;
+    margin: 0;
+  }
+
+  .wsaf-events .categories {
+    text-transform: uppercase;
+    font-size: 14px;
+    margin: 0;
+  }
 </style>
 
 <script type="text/javascript">
@@ -38,13 +104,33 @@
     return `<img alt="Event image" src="${imageUrl}">`;
   }
 
-  function formatTime(time) {
-    const date = Date.parse(time);
-    return new Intl.DateTimeFormat('en-GB', {
+  function formatEventTime(event) {
+    const startTime = new Date(Date.parse(event.start));
+    const endTime = new Date(Date.parse(event.end));
+
+    let startTimeFormatted = new Intl.DateTimeFormat('en-GB', {
+      hour: 'numeric',
+      minute: startTime.getMinutes() === 0 ? undefined : 'numeric',
+      hour12: true,
+    }).format(startTime).replaceAll(' ', '');
+    const endTimeFormatted = new Intl.DateTimeFormat('en-GB', {
+      hour: 'numeric',
+      minute: endTime.getMinutes() === 0 ? undefined : 'numeric',
+      hour12: true,
+    }).format(endTime).replaceAll(' ', '');
+
+    if (startTimeFormatted.includes('PM') && endTimeFormatted.includes('PM')) {
+      startTimeFormatted = startTimeFormatted.replace('PM', '');
+    }
+    else if (startTimeFormatted.includes('AM') && endTimeFormatted.includes('AM')) {
+      startTimeFormatted = startTimeFormatted.replace('AM', '');
+    }
+
+    const weekday = new Intl.DateTimeFormat('en-GB', {
       weekday: 'short',
-      month: 'long',
-      day: 'numeric',
-    }).format(date);
+    }).format(startTime);
+
+    return `${weekday} ${startTimeFormatted}-${endTimeFormatted}`
   }
 
   function setup() {
@@ -55,29 +141,31 @@
     for (let i = 0; i < rssFeedElements.length; i++) {
       const entry = rssFeedElements[i].getElementsByClassName('entryContent')[0];
       eventInstances.push(JSON.parse(entry.textContent.trim().replaceAll('%20', ' ')));
-      rssFeedElements[i].remove();
     }
+    rssFeedElement.remove();
 
     // Filter RSS Feed
     const filteredEventInstances = eventInstances;
 
+    // Randomise Feed
+    const randomisedEventInstances = filteredEventInstances.map(instance => ({ instance, sort: Math.random() }))
+      .sort((a, b) => a.sort - b.sort)
+      .map(val => val.instance);
+
     // Create Articles
-    const eventsDiv = document.getElementById('wsaf-events');
-    filteredEventInstances.forEach(eventInstance => {
+    const eventsDiv = document.getElementsByClassName('wsaf-events')[0];
+    eventsDiv.innerHTML = '';
+    randomisedEventInstances.forEach(eventInstance => {
       const article = document.createElement('article');
+      article.classList.add(`colour-${eventInstance.colour}`)
       article.innerHTML = `
-        <article>
-            <div>
-                <p>${formatTime(eventInstance.start)} - ${formatTime(eventInstance.end)}</p>
-                <p>${eventInstance.categories.join(' | ')}</p>
-            </div>
-            <div>
-                ${getImageTag(eventInstance)}
-            </div>
-            <div>
-                <p>${eventInstance.title}</p>
-            </div>
-        </article>
+        <p class="time">${formatEventTime(eventInstance)}</p>
+        ${getImageTag(eventInstance)}
+        <div>
+            ${eventInstance.organiser ? '<p class="presented-by">' + eventInstance.organiser + ' Presents</p>' : '' }
+            <p class="title">${eventInstance.title}</p>
+            <p class="categories">${eventInstance.categories.join(' | ')}</p>
+        </div>
     `;
       eventsDiv.appendChild(article);
     });

@@ -12,11 +12,16 @@ To get around this, we can use RSS feeds, which are fetched server-side, and the
 * Oculus screen resolution: 3840x2160px (with 3 vertical bars where screens join)
 
 ## SiteBuilder Page Setup
-1. Add an RSS Feed (Feeds -> RSS Feed) and enter the URL of the respective management page, setting it to show all items. This URL is likely one of the following:
+Note that SiteBuilder is quite hard to use for this - you may need to inspect element etc. to select blocks/elements.
+
+1. Add a block with a style of `screensize`
+2. Add an image to the block with a class name of `wsaf-background` and with the corresponding background within the screen block
+3. Add a block with a style of `wsaf-events` within the screen block
+4. Add an RSS Feed (Feeds -> RSS Feed) and enter the URL of the respective management page, setting it to show all items. This URL is likely one of the following:
    * https://wsaf-management-main.containers.uwcs.co.uk/ds/feed
    * https://management.wsaf.org.uk/ds/feed
-2. In Customisation -> Edit Page Head, copy the HTML in general-head.html followed by [screen]-head.html.
-3. Add a custom HTML block (Customisation -> Custom HTML) after the RSS feed with the following:
+5. In Customisation -> Edit Page Head, copy the HTML in general-head.html followed by [screen]-head.html.
+6. Add a custom HTML block (Customisation -> Custom HTML) after the RSS feed with the following:
 ```html
 Setup Script
 
