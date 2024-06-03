@@ -16,47 +16,46 @@
 
   .wsaf-events {
     position: absolute;
-    gap: 0;
     overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: start;
   }
 
   .wsaf-events article {
     background-color: #4F1D75;
     color: #fff;
-  }
-
-  .wsaf-events article.colour-YELLOW {
-    background-color: #FFBD00;
-    color: #000;
-  }
-
-  .wsaf-events article.colour-ORANGE {
-    background-color: #F5722F;
-    color: #fff;
-  }
-
-  .wsaf-events article.colour-PINK {
-    background-color: #B82458;
-    color: #fff;
-  }
-
-  .wsaf-events article {
+    flex-grow: 1;
     padding: 10px;
-    margin: 0 8px 16px;
-    break-inside: avoid;
     text-align: center;
   }
 
+  article.colour-YELLOW, .wsaf-heading.colour-YELLOW > p {
+    background-color: #FFBD00 !important;
+    color: #000 !important;
+  }
+
+  article.colour-ORANGE, .wsaf-heading.colour-ORANGE > p {
+    background-color: #F5722F !important;
+    color: #fff !important;
+  }
+
+  article.colour-PINK, .wsaf-heading.colour-PINK > p {
+    background-color: #B82458 !important;
+    color: #fff !important;
+  }
+
   .wsaf-events .time {
-    font-size: 16px;
+    font-size: 14px;
     text-transform: uppercase;
     font-weight: bolder;
-    margin-bottom: 5px;
+    margin-bottom: 2px;
   }
 
   .wsaf-events img {
     object-fit: contain;
-    width: 80px;
+    height: 55px;
     margin-bottom: 5px;
   }
 
@@ -65,6 +64,9 @@
     font-size: 12px;
     line-height: 15px;
     margin: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-wrap: nowrap;
   }
 
   .wsaf-events .title {
@@ -72,16 +74,43 @@
     font-size: 18px;
     line-height: 22px;
     margin: 0;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-wrap: nowrap;
   }
 
-  .wsaf-events .categories {
+  .wsaf-events .venue {
     text-transform: uppercase;
-    font-size: 14px;
+    font-size: 13px;
     margin: 0;
+    font-weight: bold;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    text-wrap: nowrap;
+  }
+
+  .wsaf-heading {
+    position: absolute;
+    display: none;
+  }
+
+  .wsaf-heading p {
+    background-color: #4F1D75;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 35px;
+    padding: 0 50px;
+    margin: 0 auto;
+    font-weight: bolder;
+    width: max-content;
+    max-width: 700px;
   }
 </style>
 
 <script type="text/javascript">
+  const searchParams = new URLSearchParams(location.search);
+  const chosenCategory = searchParams.get('category');
+
   const categoryImages = {
     MICROPHONE: "categories_microphone.png",
     BALLET_SHOES: "categories_ballet_shoes.png",
@@ -133,20 +162,17 @@
     return `${weekday} ${startTimeFormatted}-${endTimeFormatted}`
   }
 
-  function setup() {
-    // Parse RSS Feed
-    const eventInstances = [];
-    const rssFeedElement = document.getElementsByClassName('feed')[0];
-    const rssFeedElements = rssFeedElement.getElementsByClassName('feedEntry');
-    for (let i = 0; i < rssFeedElements.length; i++) {
-      const entry = rssFeedElements[i].getElementsByClassName('entryContent')[0];
-      eventInstances.push(JSON.parse(entry.textContent.trim().replaceAll('%20', ' ')));
-    }
-    rssFeedElement.remove();
+  function setHeading(text, colour) {
+    const headingDiv = document.getElementsByClassName('wsaf-heading')[0];
+    headingDiv.innerHTML = '<p>' + text + '<span class="wsaf-heading-events"> Events</span></p>';
+    headingDiv.classList.add(`colour-${colour}`)
+    headingDiv.style.display = 'block';
+  }
 
-    // Filter RSS Feed
-    const filteredEventInstances = eventInstances;
+  let filteredEventInstances = [];
 
+  function populate() {
+    // Populate events
     // Randomise Feed
     const randomisedEventInstances = filteredEventInstances.map(instance => ({ instance, sort: Math.random() }))
       .sort((a, b) => a.sort - b.sort)
@@ -162,12 +188,47 @@
         <p class="time">${formatEventTime(eventInstance)}</p>
         ${getImageTag(eventInstance)}
         <div>
-            ${eventInstance.organiser ? '<p class="presented-by">' + eventInstance.organiser + ' Presents</p>' : '' }
+            ${eventInstance.organiser ? '<p class="presented-by">' + eventInstance.organiser + ':</p>' : '' }
             <p class="title">${eventInstance.title}</p>
-            <p class="categories">${eventInstance.categories.join(' | ')}</p>
+            <p class="venue">${eventInstance.venue}</p>
         </div>
     `;
       eventsDiv.appendChild(article);
     });
+  }
+
+  function setup(refreshSeconds = 30) {
+    // Parse RSS Feed
+    const eventInstances = [];
+    const rssFeedElement = document.getElementsByClassName('feed')[0];
+    const rssFeedElements = rssFeedElement.getElementsByClassName('feedEntry');
+    for (let i = 0; i < rssFeedElements.length; i++) {
+      const entry = rssFeedElements[i].getElementsByClassName('entryContent')[0];
+      eventInstances.push(JSON.parse(entry.textContent.trim().replaceAll('%20', ' ')));
+    }
+    rssFeedElement.remove();
+
+    // Filter RSS Feed
+    if (chosenCategory) {
+      filteredEventInstances = eventInstances.filter(instance => instance.categories.some(category => category.toLowerCase().replaceAll(' ', '-') === chosenCategory));
+      if (filteredEventInstances.length === 0) filteredEventInstances = eventInstances;
+      else {
+        // Set heading. Technically this may be the wrong colour if the first filtered event instance has a non-primary
+        // first category, however this is good enough for the moment.
+        setHeading(chosenCategory.replaceAll('-', ' '), filteredEventInstances[0].colour);
+      }
+    }
+    else {
+      filteredEventInstances = eventInstances;
+    }
+
+    // Set to re-populate every minute
+    setTimeout(populate, refreshSeconds * 1000);
+
+    // Populate
+    populate();
+
+    // Refresh every 10 minutes to re-fetch stale data
+    setTimeout(() => location.reload(), 600000);
   }
 </script>

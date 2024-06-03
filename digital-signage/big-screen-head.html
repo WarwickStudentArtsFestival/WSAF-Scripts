@@ -1,175 +1,3 @@
-<link href="https://fonts.googleapis.com/css?family=Lexend" rel="stylesheet">
-<script type="text/javascript">
-  const categoryImages = {
-    MICROPHONE: "categories_microphone.png",
-    BALLET_SHOES: "categories_ballet_shoes.png",
-    TRUMPET: "categories_trumpet.png",
-    MASK: "categories_mask.png",
-    PAINTBRUSH: "categories_paintbrush.png",
-  }
-
-  function getImageTag(event) {
-    let imageUrl;
-
-    if (event.image && event.image.length > 50) {
-      imageUrl = `data:image;base64, ${event.image}`;
-    }
-    else {
-      const imageName = categoryImages[event.image];
-      imageUrl = `https://warwick.ac.uk/services/engagementgroup/marketing/digitalengagement/screens/feeds/wsaf/${imageName || 'categories_mask.png'}`;
-    }
-
-    return `<img alt="Event image" src="${imageUrl}">`;
-  }
-
-  function formatEventTime(event) {
-    const startTime = Date.parse(event.start);
-    const endTime = Date.parse(event.end);
-
-    let startTimeFormatted = new Intl.DateTimeFormat('en-GB', {
-      hour: 'numeric',
-      minute: startTime.getMinutes() === 0 ? undefined : 'numeric',
-      hour12: true,
-    }).format(startTime).replaceAll(' ', '');
-    const endTimeFormatted = new Intl.DateTimeFormat('en-GB', {
-      hour: 'numeric',
-      minute: endTime.getMinutes() === 0 ? undefined : 'numeric',
-      hour12: true,
-    }).format(endTime).replaceAll(' ', '');
-
-    if (startTimeFormatted.includes('PM') && endTimeFormatted.includes('PM')) {
-      startTimeFormatted = startTimeFormatted.replace('PM', '');
-    }
-    else if (startTimeFormatted.includes('AM') && endTimeFormatted.includes('AM')) {
-      startTimeFormatted = startTimeFormatted.replace('AM', '');
-    }
-
-    const weekday = new Intl.DateTimeFormat('en-GB', {
-      weekday: 'short',
-    }).format(startTime);
-
-    return `${weekday} ${startTimeFormatted}-${endTimeFormatted}`
-  }
-
-  function setup() {
-    // Parse RSS Feed
-    const eventInstances = [];
-    const rssFeedElement = document.getElementsByClassName('feed')[0];
-    const rssFeedElements = rssFeedElement.getElementsByClassName('feedEntry');
-    for (let i = 0; i < rssFeedElements.length; i++) {
-      const entry = rssFeedElements[i].getElementsByClassName('entryContent')[0];
-      eventInstances.push(JSON.parse(entry.textContent.trim().replaceAll('%20', ' ')));
-    }
-    rssFeedElement.remove();
-
-    // Filter RSS Feed
-    const filteredEventInstances = eventInstances;
-
-    // Randomise Feed
-    const randomisedEventInstances = filteredEventInstances.map(instance => ({ instance, sort: Math.random() }))
-      .sort((a, b) => a.sort - b.sort)
-      .map(val => val.instance);
-
-    // Create Articles
-    const eventsDiv = document.getElementsByClassName('wsaf-events')[0];
-    eventsDiv.innerHTML = '';
-    randomisedEventInstances.forEach(eventInstance => {
-      const article = document.createElement('article');
-      article.classList.add(`colour-${eventInstance.colour}`)
-      article.innerHTML = `
-        <p class="time">${formatEventTime(eventInstance)}</p>
-        ${getImageTag(eventInstance)}
-        <div>
-            ${eventInstance.organiser ? '<p class="presented-by">' + eventInstance.organiser + ' Presents</p>' : '' }
-            <p class="title">${eventInstance.title}</p>
-            <p class="categories">${eventInstance.categories.join(' | ')}</p>
-        </div>
-    `;
-      eventsDiv.appendChild(article);
-    });
-  }
-</script>
-<style>
-  /* WSAF */
-  .screensize {
-    overflow: hidden;
-    border: 1px solid;
-    background-color: #087F8C;
-    background-size: contain;
-
-    position: relative;
-  }
-
-  .screensize, .lexend {
-    font-family: 'Lexend', Arial, sans-serif;
-  }
-
-  .wsaf-events {
-    position: absolute;
-    gap: 0;
-    overflow: hidden;
-  }
-
-  .wsaf-events article {
-    background-color: #4F1D75;
-    color: #fff;
-  }
-
-  .wsaf-events article.colour-YELLOW {
-    background-color: #FFBD00;
-    color: #000;
-  }
-
-  .wsaf-events article.colour-ORANGE {
-    background-color: #F5722F;
-    color: #fff;
-  }
-
-  .wsaf-events article.colour-PINK {
-    background-color: #B82458;
-    color: #fff;
-  }
-
-  .wsaf-events article {
-    padding: 10px;
-    margin: 0 8px 16px;
-    break-inside: avoid;
-    text-align: center;
-  }
-
-  .wsaf-events .time {
-    font-size: 16px;
-    text-transform: uppercase;
-    font-weight: bolder;
-    margin-bottom: 5px;
-  }
-
-  .wsaf-events img {
-    object-fit: contain;
-    width: 80px;
-    margin-bottom: 5px;
-  }
-
-  .wsaf-events .presented-by {
-    font-style: italic;
-    font-size: 12px;
-    line-height: 15px;
-    margin: 0;
-  }
-
-  .wsaf-events .title {
-    font-weight: bolder;
-    font-size: 18px;
-    line-height: 22px;
-    margin: 0;
-  }
-
-  .wsaf-events .categories {
-    text-transform: uppercase;
-    font-size: 14px;
-    margin: 0;
-  }
-</style>
 <style>
   /* WSAF */
   .screensize {
@@ -178,18 +6,19 @@
   }
 
   .wsaf-events {
-    top: 110px;
+    top: 85px;
     left: 7px;
-    bottom: 40px;
+    bottom: 45px;
     right: 7px;
-    column-count: 3;
+
+    gap: 8px;
   }
 
   .wsaf-events article {
-    padding: 4px 6px;
-    margin: 0 4px 8px;
-    max-height: 118px;
+    padding: 4px 5px;
+    height: 135px;
     overflow: hidden;
+    max-width: 30%;
   }
 
   .wsaf-events .time {
@@ -198,21 +27,43 @@
   }
 
   .wsaf-events img {
-    width: 30px;
+    height: 28px;
     margin-bottom: 1px;
   }
 
   .wsaf-events .presented-by {
     font-size: 11px;
     line-height: 13px;
+    max-height: 26px;
+    text-wrap: wrap;
   }
 
   .wsaf-events .title {
     font-size: 13px;
     line-height: 16px;
+    max-height: 32px;
+    text-wrap: wrap;
   }
 
-  .wsaf-events .categories {
+  .wsaf-events .venue {
     font-size: 11px;
+  }
+
+  .wsaf-heading {
+    bottom: 8px;
+    left: 10px;
+    width: 170px;
+  }
+  .wsaf-heading p {
+    font-size: 15px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    padding: 0 6px;
+    text-wrap: nowrap;
+    width: 100%;
+    max-width: 100%;
+  }
+  .wsaf-heading .wsaf-heading-events {
+    display: none;
   }
 </style>
