@@ -4,4 +4,122 @@
     width: 3840px;
     height: 2160px;
   }
+
+  .wsaf-events {
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+  }
+
+  .wsaf-event-day {
+    position: absolute;
+    top: 400px;
+    bottom: 300px;
+    width: 865px;
+
+    overflow: hidden;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-content: start;
+    gap: 12px;
+  }
+
+  .wsaf-event-day-sat {
+    left: 1000px;
+  }
+
+  .wsaf-event-day-sun {
+    left: 1970px;
+  }
+
+  .wsaf-event-day-mon {
+    left: 2945px;
+  }
+
+  .wsaf-events article {
+    padding: 10px 15px;
+    width: 30%;
+  }
+
+  .wsaf-events article .time {
+    font-size: 22px;
+  }
+
+  .wsaf-events article .presented-by {
+    font-size: 18px;
+    line-height: 20px;
+    text-wrap: wrap;
+  }
+
+  .wsaf-events article .title {
+    font-size: 24px;
+    line-height: 27px;
+    text-wrap: wrap;
+  }
+
+  .wsaf-events article .venue {
+    font-size: 16px;
+    line-height: 18px;
+    margin-top: 6px;
+  }
+
+  .wsaf-events article .category {
+    font-size: 13px;
+    text-transform: uppercase;
+    margin: 0;
+  }
+
+  .wsaf-events .old-event {
+    opacity: 0.8;
+  }
+
+  .wsaf-events .old-event .time {
+    text-decoration: line-through;
+  }
 </style>
+<script>
+    function populateDay(className, eventsDiv, startTime, endTime) {
+      const dayDiv = document.createElement('div');
+      dayDiv.classList.add(className);
+      dayDiv.classList.add('wsaf-event-day');
+
+      const earliestTime = startTime.getTime();
+      const latestTime = endTime.getTime();
+      const dayEventInstances = filteredEventInstances.filter(instance => {
+        const startsAt = new Date(Date.parse(instance.start)).getTime();
+        return startsAt >= earliestTime && startsAt <= latestTime;
+      })
+
+      dayEventInstances.forEach(eventInstance => {
+        const endsAt = new Date(Date.parse(eventInstance.end)).getTime();
+
+        const article = document.createElement('article');
+        article.classList.add(`colour-${eventInstance.colour}`);
+        if (endsAt < new Date().getTime()) article.classList.add('old-event');
+        article.innerHTML = `
+        <p class="time">${formatEventTime(eventInstance, false)}</p>
+        ${getImageTag(eventInstance)}
+        <div>
+            ${eventInstance.organiser ? '<p class="presented-by">' + eventInstance.organiser + ':</p>' : '' }
+            <p class="title">${eventInstance.title}</p>
+            <p class="venue">${eventInstance.venue}</p>
+            <p class="category">${eventInstance.categories.join(' | ')}</p>
+        </div>
+    `;
+        dayDiv.appendChild(article);
+      });
+
+      eventsDiv.appendChild(dayDiv);
+    }
+
+    function populateOculus() {
+      const eventsDiv = document.getElementsByClassName('wsaf-events')[0];
+      eventsDiv.innerHTML = '';
+
+      populateDay('wsaf-event-day-sat', eventsDiv, new Date('2024-06-07T23:00:00.000Z'), new Date('2024-06-08T23:00:00.000Z'));
+      populateDay('wsaf-event-day-sun', eventsDiv, new Date('2024-06-08T23:00:00.000Z'), new Date('2024-06-09T23:00:00.000Z'));
+      populateDay('wsaf-event-day-mon', eventsDiv, new Date('2024-06-09T23:00:00.000Z'), new Date('2024-06-10T23:00:00.000Z'));
+    }
+</script>

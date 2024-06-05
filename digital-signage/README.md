@@ -26,6 +26,9 @@ Auto-advance & timings:
 * Every 10 minutes, if the page is still active it will be refetched to fetch new data
 * For both the Big Screen and Digital signage, if they are on a 'starting soon' mode and there are additional items then they will 'advance' every 8 seconds.
 
+Oculus Signage
+* This will always show all events, however passed events will be shown with transparency and a crossed out time.
+
 ## SiteBuilder Page Setup
 Note that SiteBuilder is quite hard to use for this - you may need to inspect element etc. to select blocks/elements.
 
