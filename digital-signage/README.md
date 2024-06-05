@@ -8,17 +8,23 @@ To get around this, we can use RSS feeds, which are fetched server-side, and the
 Note: all browsers running digital signage must be in the correct timezone (i.e. BST or Europe/London) otherwise times may show incorrectly.
 
 ## Screen Limitations
-* RSS feed content is limited to 2MB, so we need to make sure that all images are resized to fit whtin this
+* RSS feed content is limited to 2MB, so we need to make sure that all images are resized to fit within this
 * Digital signage resolution: 1437x808px
 * Big screen resolution: 480x270px
 * Oculus screen resolution: 3840x2160px (with 3 vertical bars where screens join)
 
 ## Behaviour
 Upon fetching a URL with a category as the `category` URL parameter (e.g. `/feeds/wsaf/digital-signage?category=exhibition`):
-1. If there are events starting in the next hour, there is a 50% chance that these will be shown with a 'Starting Soon'. These will be shown sorted by start time, then randomly
+1. If there are events starting in the next 3 hours, there is a 50% chance (Digital Signage)/30% chance (Big Screen) that these will be shown with a 'Starting Soon'. These will be shown sorted by start time, then randomly
 2. If there are any upcoming events with that remaining category, they will be shown in a random order
 3. Otherwise, if there are any remaining events, they will be shown in a random order
 4. Otherwise, a 'Thanks for attending' image will be shown
+
+Auto-advance & timings:
+* For the Big Screen, the items shown will be shuffled every 15 seconds.
+* For Digital Signage, the items shown will be shuffled every 30 seconds.
+* Every 10 minutes, if the page is still active it will be refetched to fetch new data
+* For both the Big Screen and Digital signage, if they are on a 'starting soon' mode and there are additional items then they will 'advance' every 8 seconds.
 
 ## SiteBuilder Page Setup
 Note that SiteBuilder is quite hard to use for this - you may need to inspect element etc. to select blocks/elements.

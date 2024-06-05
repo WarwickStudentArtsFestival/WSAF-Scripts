@@ -60,14 +60,29 @@
     text-overflow: ellipsis;
     padding: 0 6px;
     text-wrap: nowrap;
+    line-height: 18px;
     width: 100%;
     max-width: 100%;
   }
   .wsaf-heading .wsaf-heading-events {
     display: none;
   }
+
+  .wsaf-events .starting-soon-event .presented-by {
+    text-wrap: nowrap;
+    max-height: 13px;
+    font-size: 10px;
+  }
+
+  .wsaf-events .starting-soon-event .venue {
+    margin-top: 4px;
+    text-wrap: wrap;
+    line-height: 13px;
+    max-height: 26px;
+  }
 </style>
 <script>
     const noContentImage = 'big_screen_none_left.png';
     const refreshSeconds = 15;
+    const showStartingSoonProbability = 0.3;
 </script>

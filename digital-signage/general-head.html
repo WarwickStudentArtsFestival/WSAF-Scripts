@@ -133,7 +133,7 @@
     return `<img alt="Event image" src="${imageUrl}">`;
   }
 
-  function formatEventTime(event) {
+  function formatEventTime(event, addWeekday = true) {
     const startTime = new Date(Date.parse(event.start));
     const endTime = new Date(Date.parse(event.end));
 
@@ -159,17 +159,18 @@
       weekday: 'short',
     }).format(startTime);
 
-    return `${weekday} ${startTimeFormatted}-${endTimeFormatted}`
+    return `${addWeekday ? weekday + ' ' : ''}${startTimeFormatted}-${endTimeFormatted}`
   }
 
-  function setHeading(text, colour) {
+  function setHeading(text, colour, showEvents = false) {
     const headingDiv = document.getElementsByClassName('wsaf-heading')[0];
-    headingDiv.innerHTML = '<p>' + text + '<span class="wsaf-heading-events"> Events</span></p>';
+    headingDiv.innerHTML = '<p>' + text + (showEvents ? '<span class="wsaf-heading-events"> Events</span>' : '') + '</p>';
     headingDiv.classList.add(`colour-${colour}`)
     headingDiv.style.display = 'block';
   }
 
   let filteredEventInstances = [];
+  let startingSoonEventInstances = [];
 
   function populate() {
     // Populate events
@@ -183,7 +184,7 @@
     eventsDiv.innerHTML = '';
     randomisedEventInstances.forEach(eventInstance => {
       const article = document.createElement('article');
-      article.classList.add(`colour-${eventInstance.colour}`)
+      article.classList.add(`colour-${eventInstance.colour}`);
       article.innerHTML = `
         <p class="time">${formatEventTime(eventInstance)}</p>
         ${getImageTag(eventInstance)}
@@ -195,6 +196,33 @@
     `;
       eventsDiv.appendChild(article);
     });
+  }
+
+  function populateStartingSoon() {
+    // Populate starting soon events
+    const eventsDiv = document.getElementsByClassName('wsaf-events')[0];
+    eventsDiv.innerHTML = '';
+    startingSoonEventInstances.forEach(eventInstance => {
+      const article = document.createElement('article');
+      article.classList.add(`colour-${eventInstance.colour}`);
+      article.classList.add('starting-soon-event');
+      article.innerHTML = `
+        <p class="time">${formatEventTime(eventInstance, false)}</p>
+        ${getImageTag(eventInstance)}
+        <div>
+            ${eventInstance.organiser ? '<p class="presented-by">' + eventInstance.organiser + ':</p>' : '' }
+            <p class="title">${eventInstance.title}</p>
+            <p class="venue">${eventInstance.venue} - ${eventInstance.categories.join(' | ')}</p>
+        </div>
+    `;
+      eventsDiv.appendChild(article);
+    });
+
+    // If div is overflowing:
+    // Remove first event in list so when next called, events will 'advance'
+    if (eventsDiv.scrollHeight > eventsDiv.clientHeight + 5) {
+      startingSoonEventInstances.shift();
+    }
   }
 
   function setup() {
@@ -214,6 +242,39 @@
       const startTime = new Date(Date.parse(instance.start));
       return startTime.getTime() > currentDate;
     });
+
+    const cutoffDate = currentDate + 1000 * 60 * 60 * 3; // Current date + 3 hours
+    startingSoonEventInstances = filteredEventInstances.filter(instance => {
+      const startTime = new Date(Date.parse(instance.start));
+      return startTime.getTime() <= cutoffDate;
+    });
+
+    if (startingSoonEventInstances.length > 0) {
+      // Determine if should show starting soon events
+      if (Math.random() <= (showStartingSoonProbability || 0.5)) {
+        // Update heading
+        setHeading('Starting Soon', 'PURPLE', false);
+
+        // Randomise starting soon event instances
+        startingSoonEventInstances = startingSoonEventInstances.map(instance => ({ instance, sort: Math.random(), start: new Date(Date.parse(instance.start)).getTime() }))
+          .sort((a, b) => {
+            if (a.start !== b.start) return a.start - b.start;
+            else return a.sort - b.sort
+          })
+          .map(val => val.instance);
+
+        // Set to advance events every 8 seconds
+        setInterval(populateStartingSoon, 8 * 1000);
+
+        // Populate
+        populateStartingSoon();
+
+        // Refresh every 10 minutes to re-fetch stale data
+        setInterval(() => location.reload(), 600000);
+
+        return;
+      }
+    }
 
     if (chosenCategory) {
       const newFilteredEventInstances = filteredEventInstances.filter(instance => instance.categories.some(category => category.toLowerCase().replaceAll(' ', '-') === chosenCategory));
