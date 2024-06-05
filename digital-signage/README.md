@@ -5,6 +5,8 @@ Campus digital screens are on a VLAN which only has access to websites whitelist
 
 To get around this, we can use RSS feeds, which are fetched server-side, and then manipulate these using custom JavaScript. These RSS feeds contain JSON information about the event in each article body, which also contains base64-encoded images. This repository contains all scripts used for these screens so that they can be reused in the future.
 
+Note: all browsers running digital signage must be in the correct timezone (i.e. BST or Europe/London) otherwise times may show incorrectly.
+
 ## Screen Limitations
 * RSS feed content is limited to 2MB, so we need to make sure that all images are resized to fit whtin this
 * Digital signage resolution: 1437x808px
@@ -34,7 +36,6 @@ Note that SiteBuilder is quite hard to use for this - you may need to inspect el
 Setup Script
 
 <script>
-   setup(refreshSeconds)
+   setup()
 </script>
 ```
-`refreshSeconds` should be 30 for digital screens, 15 seconds of for big screen

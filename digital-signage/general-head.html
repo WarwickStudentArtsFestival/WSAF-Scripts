@@ -197,7 +197,7 @@
     });
   }
 
-  function setup(refreshSeconds = 30) {
+  function setup() {
     // Parse RSS Feed
     const eventInstances = [];
     const rssFeedElement = document.getElementsByClassName('feed')[0];
@@ -209,26 +209,36 @@
     rssFeedElement.remove();
 
     // Filter RSS Feed
+    const currentDate = new Date().getTime();
+    filteredEventInstances = eventInstances.filter(instance => {
+      const startTime = new Date(Date.parse(instance.start));
+      return startTime.getTime() > currentDate;
+    });
+
     if (chosenCategory) {
-      filteredEventInstances = eventInstances.filter(instance => instance.categories.some(category => category.toLowerCase().replaceAll(' ', '-') === chosenCategory));
-      if (filteredEventInstances.length === 0) filteredEventInstances = eventInstances;
-      else {
+      const newFilteredEventInstances = filteredEventInstances.filter(instance => instance.categories.some(category => category.toLowerCase().replaceAll(' ', '-') === chosenCategory));
+      if (newFilteredEventInstances.length > 0) {
+        filteredEventInstances = newFilteredEventInstances;
         // Set heading. Technically this may be the wrong colour if the first filtered event instance has a non-primary
         // first category, however this is good enough for the moment.
         setHeading(chosenCategory.replaceAll('-', ' '), filteredEventInstances[0].colour);
       }
     }
-    else {
-      filteredEventInstances = eventInstances;
+
+    if (filteredEventInstances.length === 0) {
+      const background = document.getElementsByClassName('wsaf-background')[0];
+      const backgroundImage = background.getElementsByTagName('img')[0];
+      if (noContentImage) backgroundImage.src = noContentImage;
+      return;
     }
 
     // Set to re-populate every minute
-    setTimeout(populate, refreshSeconds * 1000);
+    setInterval(populate, (refreshSeconds || 30) * 1000);
 
     // Populate
     populate();
 
     // Refresh every 10 minutes to re-fetch stale data
-    setTimeout(() => location.reload(), 600000);
+    setInterval(() => location.reload(), 600000);
   }
 </script>
