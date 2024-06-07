@@ -105,6 +105,10 @@
     width: max-content;
     max-width: 700px;
   }
+
+  #cookie-banner {
+    display: none;
+  }
 </style>
 
 <script type="text/javascript">
@@ -141,12 +145,12 @@
       hour: 'numeric',
       minute: startTime.getMinutes() === 0 ? undefined : 'numeric',
       hour12: true,
-    }).format(startTime).replaceAll(' ', '');
+    }).format(startTime).replace(/ /g, '');
     const endTimeFormatted = new Intl.DateTimeFormat('en-GB', {
       hour: 'numeric',
       minute: endTime.getMinutes() === 0 ? undefined : 'numeric',
       hour12: true,
-    }).format(endTime).replaceAll(' ', '');
+    }).format(endTime).replace(/ /g, '');
 
     if (startTimeFormatted.includes('PM') && endTimeFormatted.includes('PM')) {
       startTimeFormatted = startTimeFormatted.replace('PM', '');
@@ -226,85 +230,94 @@
   }
 
   function setup() {
-    // Parse RSS Feed
-    const eventInstances = [];
-    const rssFeedElement = document.getElementsByClassName('feed')[0];
-    const rssFeedElements = rssFeedElement.getElementsByClassName('feedEntry');
-    for (let i = 0; i < rssFeedElements.length; i++) {
-      const entry = rssFeedElements[i].getElementsByClassName('entryContent')[0];
-      eventInstances.push(JSON.parse(entry.textContent.trim().replaceAll('%20', ' ')));
-    }
-    rssFeedElement.remove();
+    try {
+      // Parse RSS Feed
+      const eventInstances = [];
+      const rssFeedElement = document.getElementsByClassName('feed')[0];
+      const rssFeedElements = rssFeedElement.getElementsByClassName('feedEntry');
+      for (let i = 0; i < rssFeedElements.length; i++) {
+        const entry = rssFeedElements[i].getElementsByClassName('entryContent')[0];
+        eventInstances.push(JSON.parse(entry.textContent.trim().replace(/\%20/g, ' ')));
+      }
+      rssFeedElement.remove();
 
-    // Filter RSS Feed
-    const currentDate = new Date().getTime();
-    filteredEventInstances = eventInstances.filter(instance => {
-      const startTime = new Date(Date.parse(instance.start));
-      return startTime.getTime() > currentDate;
-    });
+      // Filter RSS Feed
+      const currentDate = new Date().getTime();
+      filteredEventInstances = eventInstances.filter(instance => {
+        const startTime = new Date(Date.parse(instance.start));
+        return startTime.getTime() > currentDate;
+      });
 
-    const cutoffDate = currentDate + 1000 * 60 * 60 * 3; // Current date + 3 hours
-    startingSoonEventInstances = filteredEventInstances.filter(instance => {
-      const startTime = new Date(Date.parse(instance.start));
-      return startTime.getTime() <= cutoffDate;
-    });
+      const cutoffDate = currentDate + 1000 * 60 * 60 * 3; // Current date + 3 hours
+      startingSoonEventInstances = filteredEventInstances.filter(instance => {
+        const startTime = new Date(Date.parse(instance.start));
+        return startTime.getTime() <= cutoffDate;
+      });
 
-    if (startingSoonEventInstances.length > 0 && !populateOculus) {
-      // Determine if should show starting soon events
-      if (Math.random() <= (showStartingSoonProbability || 0.5)) {
-        // Update heading
-        setHeading('Starting Soon', 'PURPLE', false);
+      if (startingSoonEventInstances.length > 0 && notOculus) {
+        // Determine if should show starting soon events
+        if (Math.random() <= (showStartingSoonProbability || 0.5)) {
+          // Update heading
+          setHeading('Starting Soon', 'PURPLE', false);
 
-        // Randomise starting soon event instances
-        startingSoonEventInstances = startingSoonEventInstances.map(instance => ({ instance, sort: Math.random(), start: new Date(Date.parse(instance.start)).getTime() }))
-          .sort((a, b) => {
-            if (a.start !== b.start) return a.start - b.start;
-            else return a.sort - b.sort
-          })
-          .map(val => val.instance);
+          // Randomise starting soon event instances
+          startingSoonEventInstances = startingSoonEventInstances.map(instance => ({
+            instance,
+            sort: Math.random(),
+            start: new Date(Date.parse(instance.start)).getTime()
+          }))
+            .sort((a, b) => {
+              if (a.start !== b.start) return a.start - b.start;
+              else return a.sort - b.sort
+            })
+            .map(val => val.instance);
 
-        // Set to advance events every 8 seconds
-        setInterval(populateStartingSoon, 8 * 1000);
+          // Set to advance events every 8 seconds
+          setInterval(populateStartingSoon, 8 * 1000);
 
-        // Populate
-        populateStartingSoon();
+          // Populate
+          populateStartingSoon();
 
-        // Refresh every 10 minutes to re-fetch stale data
-        setInterval(() => location.reload(), 600000);
+          // Refresh every 10 minutes to re-fetch stale data
+          setInterval(() => location.reload(), 600000);
 
+          return;
+        }
+      }
+
+      if (chosenCategory) {
+        const newFilteredEventInstances = filteredEventInstances.filter(instance => instance.categories.some(category => category.toLowerCase().replace(/ /g, '-') === chosenCategory));
+        if (newFilteredEventInstances.length > 0) {
+          filteredEventInstances = newFilteredEventInstances;
+          // Set heading. Technically this may be the wrong colour if the first filtered event instance has a non-primary
+          // first category, however this is good enough for the moment.
+          setHeading(chosenCategory.replace(/\-/g, ' '), filteredEventInstances[0].colour);
+        }
+      }
+
+      if (filteredEventInstances.length === 0) {
+        const background = document.getElementsByClassName('wsaf-background')[0];
+        const backgroundImage = background.getElementsByTagName('img')[0];
+        if (noContentImage) backgroundImage.src = noContentImage;
         return;
       }
-    }
 
-    if (chosenCategory) {
-      const newFilteredEventInstances = filteredEventInstances.filter(instance => instance.categories.some(category => category.toLowerCase().replaceAll(' ', '-') === chosenCategory));
-      if (newFilteredEventInstances.length > 0) {
-        filteredEventInstances = newFilteredEventInstances;
-        // Set heading. Technically this may be the wrong colour if the first filtered event instance has a non-primary
-        // first category, however this is good enough for the moment.
-        setHeading(chosenCategory.replaceAll('-', ' '), filteredEventInstances[0].colour);
+      if (!notOculus) {
+        populateOculus();
+      } else {
+        // Set to re-populate every minute
+        setInterval(populate, (refreshSeconds || 30) * 1000);
+
+        // Populate
+        populate();
       }
-    }
 
-    if (filteredEventInstances.length === 0) {
-      const background = document.getElementsByClassName('wsaf-background')[0];
-      const backgroundImage = background.getElementsByTagName('img')[0];
-      if (noContentImage) backgroundImage.src = noContentImage;
-      return;
+      // Refresh every 10 minutes to re-fetch stale data
+      setInterval(() => location.reload(), 600000);
+    } catch (err) {
+      const screensize = document.getElementsByClassName('screensize')[0];
+      screensize.innerHTML = 'Error - ' + err;
     }
-
-    if (populateOculus) {
-      populateOculus();
-    }
-    else {
-      // Set to re-populate every minute
-      setInterval(populate, (refreshSeconds || 30) * 1000);
-
-      // Populate
-      populate();
-    }
-
-    // Refresh every 10 minutes to re-fetch stale data
-    setInterval(() => location.reload(), 600000);
   }
+
 </script>
