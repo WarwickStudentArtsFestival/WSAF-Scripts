@@ -183,6 +183,7 @@
     headingDiv.style.display = 'block';
   }
 
+  let eventInstances = [];
   let filteredEventInstances = [];
   let startingSoonEventInstances = [];
 
@@ -242,7 +243,7 @@
   function setup() {
     try {
       // Parse RSS Feed
-      const eventInstances = [];
+      eventInstances = [];
       const rssFeedElement = document.getElementsByClassName('feed')[0];
       const rssFeedElements = rssFeedElement.getElementsByClassName('feedEntry');
       for (let i = 0; i < rssFeedElements.length; i++) {
@@ -254,8 +255,8 @@
       // Filter RSS Feed
       const currentDate = new Date().getTime();
       filteredEventInstances = eventInstances.filter(instance => {
-        const startTime = new Date(Date.parse(instance.start));
-        return startTime.getTime() > currentDate;
+        const endTime = new Date(Date.parse(instance.end));
+        return endTime.getTime() > currentDate;
       });
 
       const cutoffDate = currentDate + 1000 * 60 * 60 * 3; // Current date + 3 hours
