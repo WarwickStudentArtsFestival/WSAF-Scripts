@@ -79,9 +79,6 @@
 
   .wsaf-events .old-event {
     opacity: 0.5;
-  }
-
-  .wsaf-events .old-event .time {
     text-decoration: line-through;
   }
 </style>
@@ -95,7 +92,7 @@
 
       const earliestTime = startTime.getTime();
       const latestTime = endTime.getTime();
-      const dayEventInstances = filteredEventInstances.filter(instance => {
+      const dayEventInstances = eventInstances.filter(instance => {
         const startsAt = new Date(Date.parse(instance.start)).getTime();
         return startsAt >= earliestTime && startsAt <= latestTime;
       })
