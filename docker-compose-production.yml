@@ -3,31 +3,31 @@ services:
     extends:
       file: docker-compose.yml
       service: wsaf-postgres
-    container_name: WSAF24-Postgres-Production
+    container_name: wsaf25-postgres-prod
     ports:
       - "48242:5432"
 
-  wsaf24-website:
+  wsaf25-website:
     extends:
       file: docker-compose.yml
-      service: wsaf24-website
-    container_name: WSAF24-Website-Production
-    image: ghcr.io/warwickstudentartsfestival/wsaf24-website:production
+      service: wsaf25-website
+    container_name: wsaf25-website-production
+    image: ghcr.io/warwickstudentartsfestival/wsaf25-website:production
 
-  wsaf-management:
-    extends:
-      file: docker-compose.yml
-      service: wsaf-management
-    container_name: WSAF24-Management-Production
-    image: ghcr.io/warwickstudentartsfestival/wsaf-management:production
-    environment:
-      USE_X_FORWARDED_HOST: "True"
+  # wsaf-management:
+  #   extends:
+  #     file: docker-compose.yml
+  #     service: wsaf-management
+  #   container_name: WSAF25-Management-Production
+  #   image: ghcr.io/warwickstudentartsfestival/wsaf-management:production
+  #   environment:
+  #     USE_X_FORWARDED_HOST: "True"
 
   wsaf-assets:
     extends:
       file: docker-compose.yml
       service: wsaf-assets
-    container_name: WSAF24-Assets-Production
+    container_name: wsaf25-assets-production
 
 volumes:
   wsaf-postgres:

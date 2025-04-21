@@ -3,30 +3,30 @@ services:
     extends:
       file: docker-compose.yml
       service: wsaf-postgres
-    container_name: WSAF24-Postgres-Main
+    container_name: wsaf25-postgres-dev
     ports:
       - "44363:5432"
 
-  wsaf24-website:
+  wsaf25-website:
     extends:
       file: docker-compose.yml
-      service: wsaf24-website
-    container_name: WSAF24-Website-Main
+      service: wsaf25-website
+    container_name: wsaf25-website-dev
 
-  wsaf-management:
-    extends:
-      file: docker-compose.yml
-      service: wsaf-management
-    container_name: WSAF24-Management-Main
-    environment:
-      USE_X_FORWARDED_HOST: "True"
-      DEBUG: ${WSAF_MANAGEMENT_DEV_DEBUG}
+  # wsaf-management:
+  #   extends:
+  #     file: docker-compose.yml
+  #     service: wsaf-management
+  #   container_name: wsaf25-management-dev
+  #   environment:
+  #     USE_X_FORWARDED_HOST: "True"
+  #     DEBUG: ${WSAF_MANAGEMENT_DEV_DEBUG}
 
   wsaf-assets:
     extends:
       file: docker-compose.yml
       service: wsaf-assets
-    container_name: WSAF24-Assets-Main
+    container_name: wsaf25-assets-dev
 
 volumes:
   wsaf-postgres:
