@@ -34,5 +34,5 @@ services:
 #    external:
 #      name: wsaf-management-media
 
-#networks:
-#  wsaf-network:
+networks:
+  wsaf-network:
