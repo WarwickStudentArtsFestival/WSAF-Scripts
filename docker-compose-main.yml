@@ -1,38 +1,38 @@
 services:
-  wsaf-postgres:
-    extends:
-      file: docker-compose.yml
-      service: wsaf-postgres
-    container_name: WSAF24-Postgres-Main
-    ports:
-      - "44363:5432"
+#  wsaf-postgres:
+#    extends:
+#      file: docker-compose.yml
+#      service: wsaf-postgres
+#    container_name: WSAF24-Postgres-Main
+#    ports:
+#      - "44363:5432"
 
   wsaf24-website:
     extends:
       file: docker-compose.yml
-      service: wsaf24-website
-    container_name: WSAF24-Website-Main
+      service: wsaf25-website
+    container_name: WSAF25-Website-Main
 
-  wsaf-management:
-    extends:
-      file: docker-compose.yml
-      service: wsaf-management
-    container_name: WSAF24-Management-Main
-    environment:
-      USE_X_FORWARDED_HOST: "True"
-      DEBUG: ${WSAF_MANAGEMENT_DEV_DEBUG}
+#  wsaf-management:
+#    extends:
+#      file: docker-compose.yml
+#      service: wsaf-management
+#    container_name: WSAF24-Management-Main
+#    environment:
+#      USE_X_FORWARDED_HOST: "True"
+#      DEBUG: ${WSAF_MANAGEMENT_DEV_DEBUG}
+#
+#  wsaf-assets:
+#    extends:
+#      file: docker-compose.yml
+#      service: wsaf-assets
+#    container_name: WSAF24-Assets-Main
 
-  wsaf-assets:
-    extends:
-      file: docker-compose.yml
-      service: wsaf-assets
-    container_name: WSAF24-Assets-Main
+#volumes:
+#  wsaf-postgres:
+#  wsaf-management-media:
+#    external:
+#      name: wsaf-management-media
 
-volumes:
-  wsaf-postgres:
-  wsaf-management-media:
-    external:
-      name: wsaf-management-media
-
-networks:
-  wsaf-network:
+#networks:
+#  wsaf-network:

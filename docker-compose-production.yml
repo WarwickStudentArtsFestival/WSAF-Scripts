@@ -1,39 +1,39 @@
 services:
-  wsaf-postgres:
+#  wsaf-postgres:
+#    extends:
+#      file: docker-compose.yml
+#      service: wsaf-postgres
+#    container_name: WSAF24-Postgres-Production
+#    ports:
+#      - "48242:5432"
+
+  wsaf25-website:
     extends:
       file: docker-compose.yml
-      service: wsaf-postgres
-    container_name: WSAF24-Postgres-Production
-    ports:
-      - "48242:5432"
+      service: wsaf25-website
+    container_name: WSAF25-Website-Production
+    image: ghcr.io/warwickstudentartsfestival/wsaf25-website:production
 
-  wsaf24-website:
-    extends:
-      file: docker-compose.yml
-      service: wsaf24-website
-    container_name: WSAF24-Website-Production
-    image: ghcr.io/warwickstudentartsfestival/wsaf24-website:production
+#  wsaf-management:
+#    extends:
+#      file: docker-compose.yml
+#      service: wsaf-management
+#    container_name: WSAF24-Management-Production
+#    image: ghcr.io/warwickstudentartsfestival/wsaf-management:production
+#    environment:
+#      USE_X_FORWARDED_HOST: "True"
+#
+#  wsaf-assets:
+#    extends:
+#      file: docker-compose.yml
+#      service: wsaf-assets
+#    container_name: WSAF24-Assets-Production
 
-  wsaf-management:
-    extends:
-      file: docker-compose.yml
-      service: wsaf-management
-    container_name: WSAF24-Management-Production
-    image: ghcr.io/warwickstudentartsfestival/wsaf-management:production
-    environment:
-      USE_X_FORWARDED_HOST: "True"
+#volumes:
+#  wsaf-postgres:
+#  wsaf-management-media:
+#    external:
+#      name: wsaf-management-media
 
-  wsaf-assets:
-    extends:
-      file: docker-compose.yml
-      service: wsaf-assets
-    container_name: WSAF24-Assets-Production
-
-volumes:
-  wsaf-postgres:
-  wsaf-management-media:
-    external:
-      name: wsaf-management-media
-
-networks:
-  wsaf-network:
+#networks:
+#  wsaf-network:

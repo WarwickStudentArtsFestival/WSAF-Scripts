@@ -1,83 +1,83 @@
 services:
-  wsaf-postgres:
-    container_name: WSAF-Postgres
-    image: postgres:latest
-    volumes:
-      - wsaf-postgres:/var/lib/postgresql/data/
+#  wsaf-postgres:
+#    container_name: WSAF-Postgres
+#    image: postgres:latest
+#    volumes:
+#      - wsaf-postgres:/var/lib/postgresql/data/
+#    networks:
+#      - wsaf-network
+#    environment:
+#      POSTGRES_USER: wsaf
+#      POSTGRES_DB: wsaf
+#    env_file:
+#      - stack.env
+
+  wsaf25-website:
+    container_name: WSAF25-Website
+    image: ghcr.io/warwickstudentartsfestival/wsaf25-website:main
     networks:
       - wsaf-network
+#    depends_on:
+#      - wsaf-postgres
     environment:
-      POSTGRES_USER: wsaf
-      POSTGRES_DB: wsaf
-    env_file:
-      - stack.env
+      VIRTUAL_HOST: ${WSAF25_WEBSITE_VIRTUAL_HOST}
 
-  wsaf24-website:
-    container_name: WSAF24-Website
-    image: ghcr.io/warwickstudentartsfestival/wsaf24-website:main
-    networks:
-      - wsaf-network
-    depends_on:
-      - wsaf-postgres
-    environment:
-      VIRTUAL_HOST: ${WSAF24_WEBSITE_VIRTUAL_HOST}
-
-      POSTGRES_USER: wsaf
-      POSTGRES_DB: wsaf
+#      POSTGRES_USER: wsaf
+#      POSTGRES_DB: wsaf
 
       PORT: 3000
-      BASE_URL: ${WSAF24_WEBSITE_BASE_URL}
+      BASE_URL: ${WSAF25_WEBSITE_BASE_URL}
       HOSTNAME: 0.0.0.0
       NODE_ENV: production
-      NEXT_PUBLIC_GOOGLE_ANALYTICS_ID: ${WSAF24_GOOGLE_ANALYTICS_ID}
-      DATABASE_URL: "postgresql://wsaf:${POSTGRES_PASSWORD}@wsaf-postgres:5432/wsaf?schema=public"
+      NEXT_PUBLIC_GOOGLE_ANALYTICS_ID: ${WSAF25_GOOGLE_ANALYTICS_ID}
+#      DATABASE_URL: "postgresql://wsaf:${POSTGRES_PASSWORD}@wsaf-postgres:5432/wsaf?schema=public"
     env_file:
       - stack.env
 
-  wsaf-management:
-    container_name: WSAF24-Management
-    image: ghcr.io/warwickstudentartsfestival/wsaf-management:main
-    volumes:
-      - wsaf-management-media:/srv/app/public/media
-    networks:
-      - wsaf-network
-
-    expose:
-      - "8080"
-
-    depends_on:
-      - wsaf-postgres
-
-    environment:
-      VIRTUAL_HOST: ${WSAF_MANAGEMENT_VIRTUAL_HOST}
-      DATABASE_URL: postgres://wsaf:${POSTGRES_PASSWORD}@wsaf-postgres:5432/wsaf?sslmode=disable
-      VIRTUAL_PORT: 8080
-      USE_DOCKER: 'on'
-      DJANGO_SETTINGS_MODULE: config.settings
-      SECRET_KEY: ${WSAF_MANAGEMENT_SECRET_KEY}
-      INTERNAL_IPS: 127.0.0.1,0.0.0.0
-      CSRF_TRUSTED_ORIGINS: ${WSAF_MANAGEMENT_BASE_URL}
-      VITE_DEV_MODE: 'false'
-    env_file:
-      - stack.env
-
-  wsaf-assets:
-    container_name: WSAF-Assets
-    image: nginx
-    volumes:
-      - wsaf-management-media:/usr/share/nginx/html:ro
-    networks:
-      - wsaf-network
-    environment:
-      VIRTUAL_HOST: ${WSAF_ASSETS_VIRTUAL_HOST}
-    env_file:
-      - stack.env
-
-volumes:
-  wsaf-postgres:
-  wsaf-management-media:
-    external:
-      name: wsaf-management-media
-
+#  wsaf-management:
+#    container_name: WSAF24-Management
+#    image: ghcr.io/warwickstudentartsfestival/wsaf-management:main
+#    volumes:
+#      - wsaf-management-media:/srv/app/public/media
+#    networks:
+#      - wsaf-network
+#
+#    expose:
+#      - "8080"
+#
+#    depends_on:
+#      - wsaf-postgres
+#
+#    environment:
+#      VIRTUAL_HOST: ${WSAF_MANAGEMENT_VIRTUAL_HOST}
+#      DATABASE_URL: postgres://wsaf:${POSTGRES_PASSWORD}@wsaf-postgres:5432/wsaf?sslmode=disable
+#      VIRTUAL_PORT: 8080
+#      USE_DOCKER: 'on'
+#      DJANGO_SETTINGS_MODULE: config.settings
+#      SECRET_KEY: ${WSAF_MANAGEMENT_SECRET_KEY}
+#      INTERNAL_IPS: 127.0.0.1,0.0.0.0
+#      CSRF_TRUSTED_ORIGINS: ${WSAF_MANAGEMENT_BASE_URL}
+#      VITE_DEV_MODE: 'false'
+#    env_file:
+#      - stack.env
+#
+#  wsaf-assets:
+#    container_name: WSAF-Assets
+#    image: nginx
+#    volumes:
+#      - wsaf-management-media:/usr/share/nginx/html:ro
+#    networks:
+#      - wsaf-network
+#    environment:
+#      VIRTUAL_HOST: ${WSAF_ASSETS_VIRTUAL_HOST}
+#    env_file:
+#      - stack.env
+#
+#volumes:
+#  wsaf-postgres:
+#  wsaf-management-media:
+#    external:
+#      name: wsaf-management-media
+#
 networks:
   wsaf-network:
