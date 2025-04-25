@@ -29,7 +29,7 @@ services:
       BASE_URL: ${WSAF25_WEBSITE_BASE_URL}
       HOSTNAME: 0.0.0.0
       NODE_ENV: production
-      NEXT_PUBLIC_GOOGLE_ANALYTICS_ID: ${WSAF25_GOOGLE_ANALYTICS_ID}
+      NEXT_PUBLIC_GOOGLE_TAG: ${WSAF25_GOOGLE_TAG}
 #      DATABASE_URL: "postgresql://wsaf:${POSTGRES_PASSWORD}@wsaf-postgres:5432/wsaf?schema=public"
     env_file:
       - stack.env
