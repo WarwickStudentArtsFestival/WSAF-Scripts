@@ -1,0 +1,147 @@
+<!--
+Requires:
+Block: .screensize
+Background Image: .wsaf-background
+Logo: .wsaf-logo
+Block: .wsaf-countdown
+-->
+<link href="https://fonts.googleapis.com/css?family=Lexend" rel="stylesheet">
+<style>
+  #cookie-banner {
+    display: none;
+  }
+
+  .screensize {
+    overflow: hidden;
+    border: 1px solid;
+    background-size: contain;
+    position: relative;
+
+    background-color: #4F1D75;
+  }
+
+  .screensize, .lexend {
+    font-family: 'Lexend', Arial, sans-serif;
+  }
+
+  .wsaf-background {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+  }
+
+  .wsaf-logo {
+    position: absolute !important;
+    z-index: 1;
+    animation: shake-x 8s ease-in-out infinite, shake-y 7s ease-in-out infinite;
+  }
+
+  @keyframes shake-x {
+    0% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-2px);
+    }
+    50% {
+      transform: translateX(2px);
+    }
+    75% {
+      transform: translateX(-1px);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  @keyframes shake-y {
+    0% {
+      transform: translateY(0);
+    }
+    25% {
+      transform: translateY(-1px);
+    }
+    50% {
+      transform: translateY(1px);
+    }
+    75% {
+      transform: translateY(-0.5px);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  .wsaf-countdown {
+    position: absolute;
+    z-index: 1;
+
+    text-align: right;
+    color: white;
+    font-weight: bold;
+    font-family: 'Lexend', Arial, sans-serif;
+  }
+
+  .countdown-number {
+    color: #FFBD00;
+  }
+
+  .countdown-number-secs {
+    display: inline-block;
+  }
+</style>
+<script>
+    const targetDate = new Date('2025-05-02T23:00Z').getTime();
+    let countdownInterval;
+
+    function clearTimeLeft() {
+      const countdownElement = document.querySelector('.wsaf-countdown');
+      if (countdownElement) {
+        countdownElement.innerHTML = `FRIDAY 2ND JUNE`;
+      }
+    }
+
+    function setTimeLeft(days, hours, minutes, seconds) {
+        const countdownElement = document.querySelector('.wsaf-countdown');
+        if (countdownElement) {
+            countdownElement.innerHTML =
+              `<span class="countdown-number">${days}</span> day${days == 1 ? '' : 's'} ` +
+              `<span class="countdown-number">${hours}</span> hour${hours == 1 ? '' : 's'} ` +
+              `<br /><span class="countdown-number">${minutes}</span> min${minutes == 1 ? '' : 's'} ` +
+              `<span class="countdown-number countdown-number-secs">${seconds}</span> secs`;
+        }
+    }
+
+    function updateCountdown() {
+        const now = new Date().getTime();
+        const difference = targetDate - now;
+
+        if (difference <= 0) {
+            clearInterval(countdownInterval);
+            clearTimeLeft();
+            return;
+        }
+
+        const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+        const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+        const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+        setTimeLeft(days, hours, minutes, seconds);
+    }
+
+
+
+    updateCountdown();
+    setInterval(updateCountdown, 1000);
+    addEventListener('DOMContentLoaded', updateCountdown)
+
+    // Reload page every hour
+    function reloadPage() {
+      location.reload();
+    }
+    setInterval(reloadPage, 1000 * 60 * 60);
+</script>
