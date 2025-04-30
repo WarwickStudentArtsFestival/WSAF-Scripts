@@ -14,3 +14,5 @@ These are currently hosted on the following pages:
 
 **Please note that these pages are publicly accessible and will immediately be shown on digital screens around campus.
 Do not publish anything unless these are ready and appropriate to be shown.**
+
+**OneLan has been setup specifically to crop to the exact position of the widget on the SiteBuilder page. Do not move this!**
