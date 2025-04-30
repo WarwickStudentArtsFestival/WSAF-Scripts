@@ -6,24 +6,73 @@
 
   .wsaf-logo {
     right: 6px;
-    top: 26px;
+    top: 15px;
+    animation: shake-x 11s ease-in-out infinite;
+  }
+
+  @keyframes shake-x {
+    0% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-15px);
+    }
+    50% {
+      transform: translateX(7px);
+    }
+    75% {
+      transform: translateX(-13px);
+    }
+    100% {
+      transform: translateX(0);
+    }
   }
 
   .wsaf-countdown {
     left: 8px;
     right: 8px;
-    top: 361px;
-    height: 50px;
+    top: 318px;
+    height: 200px;
 
-    font-size: 16px;
-    line-height: 1.4em;
+    font-size: 24px;
+    line-height: 1.15em;
   }
 
   .countdown-number {
-    font-size: 20px;
+    font-size: 30px;
   }
 
   .countdown-number-secs {
     min-width: 25px;
+  }
+
+  .trumpet {
+    position: absolute;
+    z-index: 1;
+    top: 179px;
+    left: -48px;
+    /* 9 seconds still, 1 second move */
+    animation: wiggle 10s ease-in-out infinite;
+  }
+
+  @keyframes wiggle {
+    0% {
+      transform: rotate(0deg);
+    }
+    90% {
+      transform: rotate(0deg);
+    }
+    92.5% {
+      transform: rotate(-10deg);
+    }
+    95% {
+      transform: rotate(10deg);
+    }
+    97.5% {
+      transform: rotate(-5deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
   }
 </style>

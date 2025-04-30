@@ -13,7 +13,6 @@ Block: .wsaf-countdown
 
   .screensize {
     overflow: hidden;
-    border: 1px solid;
     background-size: contain;
     position: relative;
 
@@ -36,43 +35,6 @@ Block: .wsaf-countdown
   .wsaf-logo {
     position: absolute !important;
     z-index: 1;
-    animation: shake-x 8s ease-in-out infinite, shake-y 7s ease-in-out infinite;
-  }
-
-  @keyframes shake-x {
-    0% {
-      transform: translateX(0);
-    }
-    25% {
-      transform: translateX(-2px);
-    }
-    50% {
-      transform: translateX(2px);
-    }
-    75% {
-      transform: translateX(-1px);
-    }
-    100% {
-      transform: translateX(0);
-    }
-  }
-
-  @keyframes shake-y {
-    0% {
-      transform: translateY(0);
-    }
-    25% {
-      transform: translateY(-1px);
-    }
-    50% {
-      transform: translateY(1px);
-    }
-    75% {
-      transform: translateY(-0.5px);
-    }
-    100% {
-      transform: translateX(0);
-    }
   }
 
   .wsaf-countdown {
