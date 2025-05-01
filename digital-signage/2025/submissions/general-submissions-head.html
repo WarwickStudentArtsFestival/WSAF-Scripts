@@ -53,12 +53,25 @@ File: gsap.min.js (from https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.j
 
       // Get initial values
       const bg_img = document.querySelector('.wsaf-background picture img')
-      const bg_height = bg_img.clientHeight
+      let bg_height = bg_img.clientHeight
+      if (bg_height < 5) {
+        bg_height = 800;
+      }
       const bg_parent = document.querySelector('.wsaf-background picture')
       const trump = document.querySelector('.trumpet')
-      const t_left= window.getComputedStyle(trump).getPropertyValue('left')
+      const t_width = trump.clientWidth
+      const t_left= parseInt(window.getComputedStyle(trump).getPropertyValue('left'),10)
       const logo = document.querySelector('.wsaf-logo')
       const l_anim= window.getComputedStyle(logo).getPropertyValue('animation')
+
+      const brush = document.querySelector('.brush')
+      let b_width = 0;
+      let b_left = 0;
+      if(brush) {
+        b_width = brush.clientWidth;
+        b_left = parseInt(window.getComputedStyle(brush).getPropertyValue('left'), 10)
+      }
+      console.log(`${t_left-t_width} -> ${t_left}`)
 
       let tl = gsap.timeline({ease: 'power1.in'});
       tl.set(bg_parent, {
@@ -81,8 +94,14 @@ File: gsap.min.js (from https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.j
       }, 1)
       tl.set(trump, {
         opacity: 1,
-        left: '-150px'
+        left: t_left-t_width
       })
+      if (brush) {
+        tl.set(brush, {
+          opacity: 1,
+          left: b_left-b_width
+        })
+      }
       tl.to('.wsaf-background', {
         opacity: 1,
         duration: 0.2
@@ -91,10 +110,17 @@ File: gsap.min.js (from https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.j
         height: bg_height*0.68,
         duration: 1
       }, 1.5)
-      tl.to('.trumpet', {
+      tl.to(trump, {
         left: t_left,
         duration: 0.5
       }, 1.8)
+      if (brush) {
+        tl.to(brush, {
+        left: b_left,
+        duration: 0.5
+      }, 2)
+      }
+
 
       tl.fromTo('.wsaf-countdown', {
         opacity: 0,
@@ -173,6 +199,9 @@ File: gsap.min.js (from https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.j
   }
 
   .trumpet {
+    opacity: 0;
+  }
+  .brush {
     opacity: 0;
   }
 
