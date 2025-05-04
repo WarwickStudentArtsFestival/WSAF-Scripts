@@ -1,0 +1,14 @@
+{
+  "manifest_version": 3,
+  "name": "WSAF Pretalx",
+  "version": "1.0",
+  "description": "Adds startAt and endAt fields to Pretalx modals",
+  "permissions": ["scripting", "activeTab"],
+
+  "content_scripts": [
+    {
+      "matches": ["*://pretalx.wsaf.org.uk/*/schedule/*"],
+      "js": ["script.js"]
+    }
+  ]
+}
