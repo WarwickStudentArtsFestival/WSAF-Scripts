@@ -31,6 +31,7 @@ services:
       NODE_ENV: production
       NEXT_PUBLIC_GOOGLE_ANALYTICS_ID: ${WSAF25_GOOGLE_ANALYTICS_ID}
       NEXT_PUBLIC_DISCORD_WEBHOOK_URL: ${NEXT_PUBLIC_DISCORD_WEBHOOK_URL}
+      PRETALX_PRIVATE_API_TOKEN: ${PRETALX_PRIVATE_API_TOKEN}
 #      DATABASE_URL: "postgresql://wsaf:${POSTGRES_PASSWORD}@wsaf-postgres:5432/wsaf?schema=public"
     env_file:
       - stack.env
