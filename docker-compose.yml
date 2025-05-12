@@ -19,6 +19,7 @@ services:
       - wsaf-network
 #    depends_on:
 #      - wsaf-postgres
+    restart: unless-stopped
     environment:
       VIRTUAL_HOST: ${WSAF25_WEBSITE_VIRTUAL_HOST}
 
