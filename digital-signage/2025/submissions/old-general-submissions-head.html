@@ -4,57 +4,10 @@ Block: .screensize
 Background Image: .wsaf-background
 Logo: .wsaf-logo
 Block: .wsaf-countdown
+File: gsap.min.js (from https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js)
 -->
 <link href="https://fonts.googleapis.com/css?family=Lexend" rel="stylesheet">
-<style>
-  #cookie-banner {
-    display: none;
-  }
-
-  .screensize {
-    overflow: hidden;
-    background-size: contain;
-    position: relative;
-
-    background-color: #4F1D75;
-  }
-
-  .screensize, .lexend {
-    font-family: 'Lexend', Arial, sans-serif;
-  }
-
-  .wsaf-background {
-    position: absolute !important;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    z-index: 0;
-  }
-
-  .wsaf-logo {
-    position: absolute !important;
-    z-index: 1;
-  }
-
-  .wsaf-countdown {
-    position: absolute;
-    z-index: 1;
-
-    text-align: right;
-    color: white;
-    font-weight: bold;
-    font-family: 'Lexend', Arial, sans-serif;
-  }
-
-  .countdown-number {
-    color: #FFBD00;
-  }
-
-  .countdown-number-secs {
-    display: inline-block;
-  }
-</style>
+<script src="gsap.min.js"></script>
 <script>
     const targetDate = new Date('2025-05-02T23:00Z').getTime();
     let countdownInterval;
@@ -95,15 +48,179 @@ Block: .wsaf-countdown
         setTimeLeft(days, hours, minutes, seconds);
     }
 
+    function animateIn() {
+      updateCountdown()
+
+      // Get initial values
+      const bg_img = document.querySelector('.wsaf-background picture img')
+      let bg_height = bg_img.clientHeight
+      if (bg_height < 5) {
+        bg_height = 800;
+      }
+      const bg_parent = document.querySelector('.wsaf-background picture')
+      const trump = document.querySelector('.trumpet')
+      const t_width = trump.clientWidth
+      const t_left= parseInt(window.getComputedStyle(trump).getPropertyValue('left'),10)
+      const logo = document.querySelector('.wsaf-logo')
+      const l_anim= window.getComputedStyle(logo).getPropertyValue('animation')
+
+      const brush = document.querySelector('.brush')
+      let b_width = 0;
+      let b_left = 0;
+      if(brush) {
+        b_width = brush.clientWidth;
+        b_left = parseInt(window.getComputedStyle(brush).getPropertyValue('left'), 10)
+      }
+      console.log(`${t_left-t_width} -> ${t_left}`)
+
+      let tl = gsap.timeline({ease: 'power1.in'});
+      tl.set(bg_parent, {
+        height: 0
+      })
+      tl.set(logo, {
+        animation: 'none 0s ease 0s 1 normal none running'
+      })
+
+
+      tl.fromTo(logo, {
+        opacity: 0,
+        rotation: -45,
+        scale: 0.2
+      }, {
+        opacity: 1,
+        rotation: 0,
+        scale: 1,
+        duration: 0.5
+      }, 1)
+      tl.set(trump, {
+        opacity: 1,
+        left: t_left-t_width
+      })
+      if (brush) {
+        tl.set(brush, {
+          opacity: 1,
+          left: b_left-b_width
+        })
+      }
+      tl.to('.wsaf-background', {
+        opacity: 1,
+        duration: 0.2
+      }, 1.5)
+      tl.to(bg_parent, {
+        height: bg_height*0.68,
+        duration: 1
+      }, 1.5)
+      tl.to(trump, {
+        left: t_left,
+        duration: 0.5
+      }, 1.8)
+      if (brush) {
+        tl.to(brush, {
+        left: b_left,
+        duration: 0.5
+      }, 2)
+      }
+
+
+      tl.fromTo('.wsaf-countdown', {
+        opacity: 0,
+        scale: 0.6
+      }, {
+        opacity: 1,
+        scale: 1,
+        duration: 0.4
+      },2.2
+      )
+      tl.to(bg_parent, {
+        height: bg_height,
+        duration: (1/0.68)*0.32
+      }, 2.7)
+      tl.set(logo, {
+        animation: l_anim
+      }, 2.8)
+    }
+
 
 
     updateCountdown();
     setInterval(updateCountdown, 1000);
-    addEventListener('DOMContentLoaded', updateCountdown)
+    addEventListener('DOMContentLoaded', animateIn)
 
     // Reload page every hour
     function reloadPage() {
       location.reload();
     }
     setInterval(reloadPage, 1000 * 60 * 60);
+
 </script>
+<style>
+  #cookie-banner {
+    display: none;
+  }
+
+  .screensize {
+    overflow: hidden;
+    background-size: contain;
+    position: relative;
+
+    background-color: #4F1D75;
+  }
+
+  .screensize, .lexend {
+    font-family: 'Lexend', Arial, sans-serif;
+  }
+
+  .wsaf-background {
+    position: absolute !important;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 0;
+    opacity: 0;
+    width: 100% !important;
+  }
+  .wsaf-background picture {
+    position: relative;
+    display: block;
+    overflow-y: hidden;
+    height: 0;
+  }
+  .wsaf-background picture img {
+    overflow-y: hidden;
+    position: absolute;
+    top: 0;
+  }
+
+  .wsaf-logo {
+    position: absolute !important;
+    z-index: 1;
+    opacity: 0;
+  }
+
+  .trumpet {
+    opacity: 0;
+  }
+  .brush {
+    opacity: 0;
+  }
+
+  .wsaf-countdown {
+    position: absolute;
+    z-index: 1;
+
+    text-align: right;
+    color: white;
+    font-weight: bold;
+    font-family: 'Lexend', Arial, sans-serif;
+    opacity: 0;
+  }
+
+  .countdown-number {
+    color: #FFBD00;
+  }
+
+  .countdown-number-secs {
+    display: inline-block;
+  }
+</style>
