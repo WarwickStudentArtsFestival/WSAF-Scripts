@@ -1,0 +1,108 @@
+<style>
+  .screensize {
+    width: 417px;
+    height: 653px;
+  }
+
+  .wsaf-logo {
+    left: 282px;
+    top: 180px;
+    animation: shake-x 12s ease-in-out infinite;
+  }
+
+  @keyframes shake-x {
+    0% {
+      transform: translateX(0);
+    }
+    25% {
+      transform: translateX(-18px);
+    }
+    50% {
+      transform: translateX(6px);
+    }
+    75% {
+      transform: translateX(-12px);
+    }
+    100% {
+      transform: translateX(0);
+    }
+  }
+
+  .wsaf-countdown {
+    left: 27px;
+    right: 27px;
+    top: 418px;
+    height: 94px;
+
+    font-size: 38px;
+    line-height: 1.1em;
+  }
+
+  .countdown-number {
+    font-size: 42px;
+  }
+
+  .countdown-number-secs {
+    min-width: 49px;
+  }
+
+  .trumpet {
+    position: absolute !important;
+    z-index: 1;
+    top: 129px;
+    left: -77px;
+    /* ~9.5 parts still, 0.5 part move */
+    animation: wiggle-trumpet 18s ease-in-out infinite;
+  }
+
+  @keyframes wiggle-trumpet {
+    0% {
+      transform: rotate(0deg);
+    }
+    96% {
+      transform: rotate(0deg);
+    }
+    97% {
+      transform: rotate(-10deg);
+    }
+    98% {
+      transform: rotate(10deg);
+    }
+    99% {
+      transform: rotate(-5deg);
+    }
+    100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  .brush {
+    position: absolute !important;
+    z-index: 1;
+    top: 460px;
+    left: -28px;
+    /* ~9.5 parts still, 0.5 part move */
+    animation: wiggle-brush 14s ease-in-out infinite;
+  }
+
+  @keyframes wiggle-brush {
+    0% {
+      transform: rotate(0deg);
+    }
+    40% {
+      transform: rotate(0deg);
+    }
+    41% {
+      transform: rotate(-10deg);
+    }
+    42% {
+      transform: rotate(10deg);
+    }
+    43% {
+      transform: rotate(-5deg);
+    }
+    44% {
+      transform: rotate(0deg);
+    }
+  }
+</style>

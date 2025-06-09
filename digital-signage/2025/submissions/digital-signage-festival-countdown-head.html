@@ -1,13 +1,13 @@
 <link href="https://fonts.googleapis.com/css?family=Lexend" rel="stylesheet">
 <script src="gsap.min.js"></script>
 <script>
-  const targetDate = new Date('2025-05-02T23:00Z').getTime();
+  const targetDate = new Date('2025-06-13T09:00Z').getTime();
   let countdownInterval;
 
   function clearTimeLeft() {
     const countdownElement = document.querySelector('.wsaf-countdown');
     if (countdownElement) {
-      countdownElement.innerHTML = `FRIDAY 2ND JUNE`;
+      countdownElement.innerHTML = `FRIDAY 13TH JUNE`;
     }
   }
 
@@ -47,13 +47,23 @@
     const bg_img = document.querySelector('.wsaf-background picture img')
     let bg_height = bg_img.clientHeight
     if (bg_height < 5) {
-      bg_height = 644
+      bg_height = 654;
     }
     const bg_parent = document.querySelector('.wsaf-background picture')
     const trump = document.querySelector('.trumpet')
-    const t_left= window.getComputedStyle(trump).getPropertyValue('left')
+    const t_width = trump.clientWidth
+    const t_left= parseInt(window.getComputedStyle(trump).getPropertyValue('left'),10)
     const logo = document.querySelector('.wsaf-logo')
     const l_anim= window.getComputedStyle(logo).getPropertyValue('animation')
+
+    const brush = document.querySelector('.brush')
+    let b_width = 0;
+    let b_left = 0;
+    if(brush) {
+      b_width = brush.clientWidth;
+      b_left = parseInt(window.getComputedStyle(brush).getPropertyValue('left'), 10)
+    }
+    console.log(`${t_left-t_width} -> ${t_left}`)
 
     let tl = gsap.timeline({ease: 'power1.in'});
     tl.set(bg_parent, {
@@ -76,8 +86,14 @@
     }, 1)
     tl.set(trump, {
       opacity: 1,
-      left: '-150px'
+      left: t_left-t_width
     })
+    if (brush) {
+      tl.set(brush, {
+        opacity: 1,
+        left: b_left-b_width
+      })
+    }
     tl.to('.wsaf-background', {
       opacity: 1,
       duration: 0.2
@@ -86,10 +102,17 @@
       height: bg_height*0.68,
       duration: 1
     }, 1.5)
-    tl.to('.trumpet', {
+    tl.to(trump, {
       left: t_left,
       duration: 0.5
     }, 1.8)
+    if (brush) {
+      tl.to(brush, {
+        left: b_left,
+        duration: 0.5
+      }, 2)
+    }
+
 
     tl.fromTo('.wsaf-countdown', {
         opacity: 0,
@@ -170,6 +193,9 @@
   .trumpet {
     opacity: 0;
   }
+  .brush {
+    opacity: 0;
+  }
 
   .wsaf-countdown {
     position: absolute;
@@ -192,14 +218,14 @@
 </style>
 <style>
   .screensize {
-    width: 169px;
-    height: 644px;
+    width: 417px;
+    height: 653px;
   }
 
   .wsaf-logo {
-    right: 6px;
-    top: 15px;
-    animation: shake-x 11s ease-in-out infinite;
+    left: 282px;
+    top: 180px;
+    animation: shake-x 12s ease-in-out infinite;
   }
 
   @keyframes shake-x {
@@ -207,13 +233,13 @@
       transform: translateX(0);
     }
     25% {
-      transform: translateX(-15px);
+      transform: translateX(-18px);
     }
     50% {
-      transform: translateX(7px);
+      transform: translateX(6px);
     }
     75% {
-      transform: translateX(-13px);
+      transform: translateX(-12px);
     }
     100% {
       transform: translateX(0);
@@ -221,49 +247,79 @@
   }
 
   .wsaf-countdown {
-    left: 8px;
-    right: 8px;
-    top: 318px;
-    height: 200px;
+    left: 27px;
+    right: 27px;
+    top: 418px;
+    height: 94px;
 
-    font-size: 24px;
-    line-height: 1.15em;
+    font-size: 38px;
+    line-height: 1.1em;
   }
 
   .countdown-number {
-    font-size: 30px;
+    font-size: 42px;
   }
 
   .countdown-number-secs {
-    min-width: 38px;
+    min-width: 52px;
   }
 
   .trumpet {
-    position: absolute;
+    position: absolute !important;
     z-index: 1;
-    top: 179px;
-    left: -48px;
-    /* 9 seconds still, 1 second move */
-    animation: wiggle 10s ease-in-out infinite;
+    top: 129px;
+    left: -77px;
+    /* ~9.5 parts still, 0.5 part move */
+    animation: wiggle-trumpet 18s ease-in-out infinite;
   }
 
-  @keyframes wiggle {
+  @keyframes wiggle-trumpet {
     0% {
       transform: rotate(0deg);
     }
-    90% {
+    96% {
       transform: rotate(0deg);
     }
-    92.5% {
+    97% {
       transform: rotate(-10deg);
     }
-    95% {
+    98% {
       transform: rotate(10deg);
     }
-    97.5% {
+    99% {
       transform: rotate(-5deg);
     }
     100% {
+      transform: rotate(0deg);
+    }
+  }
+
+  .brush {
+    position: absolute !important;
+    z-index: 1;
+    top: 460px;
+    left: -28px;
+    /* ~9.5 parts still, 0.5 part move */
+    animation: wiggle-brush 14s ease-in-out infinite;
+  }
+
+  @keyframes wiggle-brush {
+    0% {
+      transform: rotate(0deg);
+    }
+    40% {
+      transform: rotate(0deg);
+    }
+    41% {
+      transform: rotate(-10deg);
+    }
+    42% {
+      transform: rotate(10deg);
+    }
+    43% {
+      transform: rotate(-5deg);
+    }
+    44% {
       transform: rotate(0deg);
     }
   }
